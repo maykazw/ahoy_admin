@@ -30,7 +30,6 @@ class AhoyAdmin::OverviewPresenter < AhoyAdmin::BasePresenter
     views = Ahoy::Event
       .where(time: current_period_range)
       .where(name: "$view")
-      .group_by_period(group_by_period, :time, range: current_period_range)
       .order("2")
 
     views = views.joins(:visit).where(ahoy_visits: { bot: nil }) if bots_column?
@@ -44,7 +43,6 @@ class AhoyAdmin::OverviewPresenter < AhoyAdmin::BasePresenter
   memoize def data_visits
     visits = Ahoy::Visit
       .where(started_at: current_period_range)
-      .group_by_period(group_by_period, :started_at, range: current_period_range)
       .order("2")
     visits = visits.where(bot: nil) if bots_column?
     visits.count
@@ -75,7 +73,6 @@ class AhoyAdmin::OverviewPresenter < AhoyAdmin::BasePresenter
 
     durations_avg = Ahoy::Visit
       .from("(#{durations.to_sql}) ahoy_visits")
-      .group_by_period(group_by_period, :started_at, range: current_period_range)
       .average(:duration)
 
     durations_avg
@@ -128,7 +125,6 @@ class AhoyAdmin::OverviewPresenter < AhoyAdmin::BasePresenter
   memoize def data_views_all
     views = Ahoy::Event
       .where(name: "$view")
-      .group_by_period(group_by_period, :time, range: current_period_range)
 
     views = views.joins(:visit).where(ahoy_visits: { bot: nil }) if bots_column?
     views = views.count
