@@ -116,6 +116,8 @@ class AhoyAdmin::BasePresenter
   end
 
   def chart_adjustment(data)
+    return [0,0] if data.nil? || data.zero?
+   
     x = data.map { |i| i.first.to_time.to_i }
     y = data.map { |i| i.last.to_i }
 
